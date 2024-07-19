@@ -3,37 +3,35 @@ name: Portfolio Deployment
 on:
   push:
     branches:
-    - main
+      - main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v1
+      - name: Checkout
+        uses: actions/checkout@v3  # Updated to v3
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2  # Updated to v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
-    - name: Deploy static site to S3 bucket
-      run: aws s3 sync . s3://akshay-portfoliyo --delete
+      - name: Deploy static site to S3 bucket
+        run: aws s3 sync . s3://akshay-portfoliyo --delete
 
-
-
-    - name: Trigger another workflow
-      uses: actions/github-script@v6
-      with:
-        script: |
-          const { data: response } = await github.rest.actions.createWorkflowDispatch({
-            owner: 'onlineresultsite',
-            repo: 'my-selenium-tests',
-            workflow_id: 'main.yml',
-            ref: 'main'
-          });
-          console.log(response);
-      env:
-        GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: Trigger another workflow
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { data: response } = await github.rest.actions.createWorkflowDispatch({
+              owner: 'onlineresultsite',
+              repo: 'my-selenium-tests',
+              workflow_id: 'main.yml',
+              ref: 'main'
+            });
+            console.log(response);
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}  # Ensure this token has the correct permissions
