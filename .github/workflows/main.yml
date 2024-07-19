@@ -26,8 +26,9 @@ jobs:
       uses: actions/github-script@v6
       with:
         script: |
-          const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
-          const response = await octokit.actions.createWorkflowDispatch({
+          const token = process.env.GITHUB_TOKEN;
+          const octokit = require('@octokit/core').Octokit({ auth: token });
+          const response = await octokit.request('POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches', {
             owner: 'onlineresultsite',
             repo: 'my-selenium-tests',
             workflow_id: 'main.yml',
