@@ -18,35 +18,4 @@ inputs:
     required: true
 runs:
   using: 'node12'
-  steps:
-    - name: 'Install Dependencies'
-      run: |
-        npm install
-      shell: bash
-      
-    - name: 'Run script'
-      run: |
-        const { Octokit } = require('@octokit/rest');
-        const core = require('@actions/core');
-
-        const octokit = new Octokit({ auth: core.getInput('token') });
-
-        async function run() {
-          try {
-            const response = await octokit.rest.actions.createWorkflowDispatch({
-              owner: core.getInput('owner'),
-              repo: core.getInput('repo'),
-              workflow_id: core.getInput('workflow_id'),
-              ref: core.getInput('ref'),
-            });
-            console.log(response);
-          } catch (error) {
-            console.error(error);
-            process.exit(1);
-          }
-        }
-
-        run();
-      shell: node
-      env:
-        GITHUB_TOKEN: ${{ inputs.token }}
+  main: 'index.js'
