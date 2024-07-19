@@ -1,3 +1,48 @@
+# name: Portfolio Deployment
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v3  # Updated to v3
+
+#       - name: Configure AWS Credentials
+#         uses: aws-actions/configure-aws-credentials@v2  # Updated to v2
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: us-east-1
+
+#       - name: Deploy static site to S3 bucket
+#         run: aws s3 sync . s3://akshay-portfoliyo --delete
+
+#       - name: Trigger another workflow
+#         uses: actions/github-script@v6
+#         with:
+#           script: |
+#             const { GitHub } = require('@actions/github');
+#             const octokit = new GitHub(process.env.GITHUB_TOKEN);
+            
+#             const response = await octokit.rest.actions.createWorkflowDispatch({
+#               owner: 'onlineresultsite',
+#               repo: 'my-selenium-tests',
+#               workflow_id: 'main.yml',
+#               ref: 'main'
+#             });
+
+#             console.log(response);
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}  # Ensure this token has the correct permissions
+
+
+
+
 name: Portfolio Deployment
 
 on:
@@ -10,10 +55,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3  # Updated to v3
+        uses: actions/checkout@v3
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2  # Updated to v2
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -23,29 +68,10 @@ jobs:
         run: aws s3 sync . s3://akshay-portfoliyo --delete
 
       - name: Trigger another workflow
-        uses: actions/github-script@v6
+        uses: ./.github/actions/trigger-workflow
         with:
-          script: |
-            const { GitHub } = require('@actions/github');
-            const octokit = new GitHub(process.env.GITHUB_TOKEN);
-            
-            const response = await octokit.rest.actions.createWorkflowDispatch({
-              owner: 'onlineresultsite',
-              repo: 'my-selenium-tests',
-              workflow_id: 'main.yml',
-              ref: 'main'
-            });
-
-            console.log(response);
-        env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}  # Ensure this token has the correct permissions
-
-
-
-
-# const { data: response } = await github.rest.actions.createWorkflowDispatch({
-#   owner: 'onlineresultsite',
-#   repo: 'my-selenium-tests',
-#   workflow_id: 'main.yml',
-#   ref: 'main'
-# });
+          token: ${{ secrets.GITHUB_TOKEN }}
+          owner: 'onlineresultsite'
+          repo: 'my-selenium-tests'
+          workflow_id: 'main.yml'
+          ref: 'main'
