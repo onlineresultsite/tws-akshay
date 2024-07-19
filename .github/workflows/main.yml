@@ -26,19 +26,19 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-
-            const token = process.env.GITHUB_TOKEN;
-            const octokit = require('@octokit/core').Octokit({ auth: token });
-            const response = await octokit.request('POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}', {
-             owner: 'onlineresultsite',
-             repo: 'my-selenium-tests',
-             workflow_id: 'main.yml',
-             ref: 'main'
+            const { GitHub } = require('@actions/github');
+            const github = new GitHub(process.env.GITHUB_TOKEN);
+            
+            const response = await github.rest.actions.createWorkflowDispatch({
+              owner: 'onlineresultsite',
+              repo: 'my-selenium-tests',
+              workflow_id: 'main.yml',
+              ref: 'main'
             });
+
             console.log(response);
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}  # Ensure this token has the correct permissions
-
 
 
 # const { data: response } = await github.rest.actions.createWorkflowDispatch({
