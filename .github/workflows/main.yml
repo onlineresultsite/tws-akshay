@@ -22,25 +22,12 @@ jobs:
       - name: Deploy static site to S3 bucket
         run: aws s3 sync . s3://akshay-portfoliyo --delete
 
-      - name: Trigger another workflow
-        uses: actions/github-script@v6
+      - name: Trigger Selenium workflow
+        uses: peter-evans/repository-dispatch@v2
         with:
-          script: |
-            const { GitHub } = require('@actions/github');
-            const octokit = new GitHub(process.env.GITHUB_TOKEN);
-            
-            const response = await octokit.rest.actions.createWorkflowDispatch({
-              owner: 'onlineresultsite',
-              repo: 'my-selenium-tests',
-              workflow_id: 'main.yml',
-              ref: 'main'
-            });
-
-            console.log(response);
-        env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}  # Ensure this token has the correct permissions
-
-
-
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          repository: onlineresultsite/my-selenium-tests
+          event-type: selenium-tests
+          client-payload: '{"ref": "main"}'
 
 
