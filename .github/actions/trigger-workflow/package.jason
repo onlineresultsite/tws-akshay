@@ -1,9 +1,13 @@
 {
   "name": "trigger-workflow",
   "version": "1.0.0",
+  "description": "Custom GitHub Action to trigger workflow",
   "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
-    "@octokit/rest": "^18.0.0",
-    "@actions/core": "^1.0.0"
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^4.0.0"
   }
 }
